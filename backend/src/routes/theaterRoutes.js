@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
   addTheater,
-  getTheater,
+  getTheaterById,
   updateTheater,
   deleteTheater,
   getAllTheaters
@@ -12,7 +12,7 @@ const {
 router.post('/add', addTheater);
 
 // Route to get a theater by ID
-router.get('/:id', getTheater);
+router.get('/:id', getTheaterById);
 
 // Route to update a theater by ID
 router.put('/:id', updateTheater);

@@ -1,18 +1,30 @@
 const Theater = require('../../models/Theater');
 
-// Add a theater
+// Create a new theater
 exports.addTheater = async (req, res) => {
   try {
-    const theater = new Theater(req.body);
-    await theater.save();
-    res.status(201).json(theater);
+    const { name, location, amenities, totalSeats } = req.body;
+
+    // Create new theater instance
+    const newTheater = new Theater({
+      name,
+      location,
+      amenities,
+      totalSeats,
+    });
+
+    // Save theater to the database
+    const savedTheater = await newTheater.save();
+
+    // Send success response
+    res.status(201).json({ message: 'Theater added successfully', theater: savedTheater });
   } catch (error) {
-    res.status(500).json({ error: error.message || 'An unknown error occurred' });
+    // Handle errors
+    res.status(500).json({ message: 'Error adding theater', error: error.message });
   }
 };
-
 // Get a theater by ID
-exports.getTheater = async (req, res) => {
+exports.getTheaterById = async (req, res) => {
   try {
     const theater = await Theater.findById(req.params.id);
     if (!theater) return res.status(404).json({ message: 'Theater not found' });
@@ -25,13 +37,25 @@ exports.getTheater = async (req, res) => {
 // Update a theater by ID
 exports.updateTheater = async (req, res) => {
   try {
-    const theater = await Theater.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!theater) return res.status(404).json({ message: 'Theater not found' });
-    res.json(theater);
+    const { id } = req.params;
+    const { name, location, amenities, totalSeats } = req.body;
+
+    const updatedTheater = await Theater.findByIdAndUpdate(
+      id,
+      { name, location, amenities, totalSeats },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedTheater) {
+      return res.status(404).json({ message: "Theater not found" });
+    }
+
+    res.json(updatedTheater);
   } catch (error) {
-    res.status(500).json({ error: error.message || 'An unknown error occurred' });
+    res.status(500).json({ message: "Failed to update theater", error });
   }
 };
+
 
 // Delete a theater by ID
 exports.deleteTheater = async (req, res) => {
