@@ -1,35 +1,28 @@
 "use client";
 import React from "react";
+import Banner from "../../components/Banner";
+import MovieSection from "../../components/MovieSection";
 
 const LandingPage = () => {
   return (
     <div>
-      <main className="bg-gray-100 min-h-full py-16">
-        <section className="container mx-auto text-center mb-8">
-          <h2 className="text-4xl font-semibold text-gray-800">
-            Welcome to Movie Ticket Booking
-          </h2>
-          <p className="text-gray-600 mt-4">
-            Book your tickets for the latest movies in just a few clicks!
-          </p>
-        </section>
-
-        <section className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Example movie cards */}
-          <div className="bg-white shadow-lg rounded-lg p-4">
-            <img
-              src="/movie-poster.jpg"
-              alt="Movie Poster"
-              className="rounded-md"
-            />
-            <h3 className="text-xl font-bold mt-4">Movie Title</h3>
-            <p className="text-gray-600 mt-2">description of the movie.</p>
-            <a href="/movies" className="block text-red-600 mt-4">
-              Book Tickets
-            </a>
-          </div>
-        </section>
-      </main>
+      <div className="min-h-full flex flex-col">
+        <main className="flex-grow">
+          <Banner />
+          <section className="container mx-auto px-4 py-8">
+            <h2 className="text-2xl font-bold mb-4">Now Showing</h2>
+            <MovieSection category="now-showing" />
+          </section>
+          <section className="container mx-auto px-4 py-8">
+            <h2 className="text-2xl font-bold mb-4">Coming Soon</h2>
+            <MovieSection category="coming-soon" />
+          </section>
+          <section className="container mx-auto px-4 py-8">
+            <h2 className="text-2xl font-bold mb-4">Top Rated</h2>
+            <MovieSection category="top-rated" />
+          </section>
+        </main>
+      </div>
     </div>
   );
 };
