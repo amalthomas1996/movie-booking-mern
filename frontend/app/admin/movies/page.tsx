@@ -51,6 +51,9 @@ const Movies = () => {
               Poster
             </th>
             <th className="border-b-2 border-gray-200 p-3 text-left text-base font-semibold text-gray-700">
+              Rating
+            </th>
+            <th className="border-b-2 border-gray-200 p-3 text-left text-base font-semibold text-gray-700">
               Actions
             </th>
           </tr>
@@ -66,12 +69,13 @@ const Movies = () => {
                   <img
                     src={movie.image}
                     alt={movie.title || "Movie Image"}
-                    className="w-54 h-44 object-fit"
+                    className="w-34 h-24 object-cover"
                   />
                 ) : (
                   "No Image"
                 )}
               </td>
+              <td className="p-3 text-sm text-gray-700">{movie.rating}</td>
               <td className="p-3 text-sm text-gray-700">
                 <div className="flex justify-left space-x-2">
                   <button

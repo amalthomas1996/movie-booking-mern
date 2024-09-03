@@ -8,16 +8,19 @@ const MovieForm = () => {
   const { id } = useParams();
   const [movie, setMovie] = useState({
     title: "",
-    director: "",
-    genre: "",
+    description: "",
     releaseDate: "",
+    rating: "",
+    image: "",
+    duration: "",
+    genre: "",
   });
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (id) {
       setIsEditing(true);
-      fetch(`/api/movies/${id}`)
+      fetch(`http://localhost:5000/api/movies/${id}`)
         .then((res) => res.json())
         .then((data) => setMovie(data))
         .catch((error) => console.error("Error fetching movie:", error));
@@ -65,17 +68,17 @@ const MovieForm = () => {
         />
         <input
           type="text"
-          name="director"
-          placeholder="Director"
-          value={movie.director}
+          name="description"
+          placeholder="description"
+          value={movie.description}
           onChange={handleChange}
           className="block w-full p-2 mb-4 border rounded"
         />
         <input
           type="text"
-          name="genre"
-          placeholder="Genre"
-          value={movie.genre}
+          name="rating"
+          placeholder="rating"
+          value={movie.rating}
           onChange={handleChange}
           className="block w-full p-2 mb-4 border rounded"
         />
@@ -83,6 +86,30 @@ const MovieForm = () => {
           type="date"
           name="releaseDate"
           value={movie.releaseDate}
+          onChange={handleChange}
+          className="block w-full p-2 mb-4 border rounded"
+        />
+        <input
+          type="text"
+          name="image"
+          placeholder="image"
+          value={movie.image}
+          onChange={handleChange}
+          className="block w-full p-2 mb-4 border rounded"
+        />
+        <input
+          type="text"
+          name="duration"
+          placeholder="duration"
+          value={movie.duration}
+          onChange={handleChange}
+          className="block w-full p-2 mb-4 border rounded"
+        />
+        <input
+          type="text"
+          name="genre"
+          placeholder="genre"
+          value={movie.genre}
           onChange={handleChange}
           className="block w-full p-2 mb-4 border rounded"
         />
