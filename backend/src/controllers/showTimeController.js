@@ -1,55 +1,69 @@
-const ShowTime = require('../../models/ShowTime');
+const Showtime = require('../../models/ShowTime');
+const Theater = require('../../models/Theater');
+const Movie = require('../../models/Movie');
 
-// Add a showtime
-exports.addShowTime = async (req, res) => {
+// Add a new showtime
+exports.addShowtime = async (req, res) => {
   try {
-    const showTime = new ShowTime(req.body);
-    await showTime.save();
-    res.status(201).json(showTime);
+    const { theater, movie, showtime } = req.body;
+
+    // Check if the same theater is already showing the same movie at the same time
+    const existingShowtime = await Showtime.findOne({ theater, movie, showtime });
+    if (existingShowtime) {
+      return res.status(400).json({ message: 'This movie is already scheduled at this theater for the selected time.' });
+    }
+
+    // Create the new showtime
+    const newShowtime = new Showtime({ theater, movie, showtime, seats: generateSeats(50) }); // Example: generate 50 seats
+    await newShowtime.save();
+
+    res.status(201).json({ message: 'Showtime created successfully', showtime: newShowtime });
   } catch (error) {
-    res.status(500).json({ error: error.message || 'An unknown error occurred' });
+    res.status(500).json({ message: 'Error creating showtime', error });
   }
 };
 
-// Get a showtime by ID
-exports.getShowTime = async (req, res) => {
-  try {
-    const showTime = await ShowTime.findById(req.params.id);
-    if (!showTime) return res.status(404).json({ message: 'ShowTime not found' });
-    res.json(showTime);
-  } catch (error) {
-    res.status(500).json({ error: error.message || 'An unknown error occurred' });
+// Generate seats
+const generateSeats = (count) => {
+  const seats = [];
+  for (let i = 1; i <= count; i++) {
+    seats.push({ seatNumber: `A${i}`, isBooked: false });
   }
-};
-
-// Update a showtime by ID
-exports.updateShowTime = async (req, res) => {
-  try {
-    const showTime = await ShowTime.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!showTime) return res.status(404).json({ message: 'ShowTime not found' });
-    res.json(showTime);
-  } catch (error) {
-    res.status(500).json({ error: error.message || 'An unknown error occurred' });
-  }
-};
-
-// Delete a showtime by ID
-exports.deleteShowTime = async (req, res) => {
-  try {
-    const showTime = await ShowTime.findByIdAndDelete(req.params.id);
-    if (!showTime) return res.status(404).json({ message: 'ShowTime not found' });
-    res.json({ message: 'ShowTime deleted' });
-  } catch (error) {
-    res.status(500).json({ error: error.message || 'An unknown error occurred' });
-  }
+  return seats;
 };
 
 // Get all showtimes
-exports.getAllShowTimes = async (req, res) => {
+exports.getShowtimes = async (req, res) => {
   try {
-    const showTimes = await ShowTime.find();
-    res.json(showTimes);
+    const showtimes = await Showtime.find().populate('theater movie');
+    res.status(200).json(showtimes);
   } catch (error) {
-    res.status(500).json({ error: error.message || 'An unknown error occurred' });
+    res.status(500).json({ message: 'Error fetching showtimes', error });
+  }
+};
+
+// Get showtime by ID
+exports.getShowtimeById = async (req, res) => {
+  try {
+    const showtime = await Showtime.findById(req.params.id).populate('theater movie');
+    if (!showtime) {
+      return res.status(404).json({ message: 'Showtime not found' });
+    }
+    res.status(200).json(showtime);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching showtime', error });
+  }
+};
+
+// Delete a showtime
+exports.deleteShowtime = async (req, res) => {
+  try {
+    const showtime = await Showtime.findByIdAndDelete(req.params.id);
+    if (!showtime) {
+      return res.status(404).json({ message: 'Showtime not found' });
+    }
+    res.status(200).json({ message: 'Showtime deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting showtime', error });
   }
 };

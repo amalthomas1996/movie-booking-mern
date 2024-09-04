@@ -7,7 +7,7 @@ const Showtimes = () => {
   const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/showtimes")
+    fetch("http://localhost:5000/api/showtimes")
       .then((res) => res.json())
       .then((data) => setShowtimes(data))
       .catch((error) => console.error("Error fetching showtimes:", error));
@@ -30,7 +30,7 @@ const Showtimes = () => {
     <div>
       <h1 className="text-3xl font-bold mb-4">Manage Showtimes</h1>
       <button
-        onClick={() => router.push("/admin/showtimes/new")}
+        onClick={() => router.push("/admin/showtimes/add-showtime")}
         className="mb-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
       >
         Add New Showtime

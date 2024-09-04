@@ -19,7 +19,9 @@ const Movies = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await fetch(`/api/movies/${id}`, { method: "DELETE" });
+      await fetch(`http://localhost:5000/api/movies/${id}`, {
+        method: "DELETE",
+      });
       setMovies(movies.filter((movie: any) => movie._id !== id));
     } catch (error) {
       console.error("Error deleting movie:", error);

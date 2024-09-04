@@ -35,13 +35,16 @@ const MovieForm = () => {
     e.preventDefault();
     try {
       const method = isEditing ? "PUT" : "POST";
-      const response = await fetch(`/api/movies${isEditing ? `/${id}` : ""}`, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(movie),
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/movies${isEditing ? `/${id}` : ""}`,
+        {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(movie),
+        }
+      );
       if (response.ok) {
         router.push("/admin/movies");
       } else {
@@ -53,19 +56,25 @@ const MovieForm = () => {
   };
 
   return (
-    <div>
+    <div className="max-w-md mx-auto mt-8">
       <h1 className="text-3xl font-bold mb-4">
         {isEditing ? "Edit Movie" : "Add Movie"}
       </h1>
+
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="title"
-          placeholder="Movie Title"
-          value={movie.title}
-          onChange={handleChange}
-          className="block w-full p-2 mb-4 border rounded"
-        />
+        <div className="mb-4">
+          <label className="block font-medium">Title:</label>
+
+          <input
+            type="text"
+            name="title"
+            placeholder="Movie Title"
+            value={movie.title}
+            onChange={handleChange}
+            className="block w-full p-2 mb-4 border rounded"
+          />
+        </div>
+        <label className="block font-medium">Description:</label>
         <input
           type="text"
           name="description"
@@ -74,6 +83,7 @@ const MovieForm = () => {
           onChange={handleChange}
           className="block w-full p-2 mb-4 border rounded"
         />
+        <label className="block font-medium">Rating:</label>
         <input
           type="text"
           name="rating"
@@ -82,6 +92,7 @@ const MovieForm = () => {
           onChange={handleChange}
           className="block w-full p-2 mb-4 border rounded"
         />
+        <label className="block font-medium">Release Date:</label>
         <input
           type="date"
           name="releaseDate"
@@ -89,6 +100,7 @@ const MovieForm = () => {
           onChange={handleChange}
           className="block w-full p-2 mb-4 border rounded"
         />
+        <label className="block font-medium">Poster Link:</label>
         <input
           type="text"
           name="image"
@@ -97,6 +109,7 @@ const MovieForm = () => {
           onChange={handleChange}
           className="block w-full p-2 mb-4 border rounded"
         />
+        <label className="block font-medium">Duration:</label>
         <input
           type="text"
           name="duration"
@@ -105,6 +118,7 @@ const MovieForm = () => {
           onChange={handleChange}
           className="block w-full p-2 mb-4 border rounded"
         />
+        <label className="block font-medium">Genre:(comma-separated)</label>
         <input
           type="text"
           name="genre"

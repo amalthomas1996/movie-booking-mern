@@ -1,26 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const {
-  addShowTime,
-  getShowTime,
-  updateShowTime,
-  deleteShowTime,
-  getAllShowTimes
-} = require('../controllers/showTimeController');
+const { addShowtime, getShowtimes, getShowtimeById, deleteShowtime } = require('../controllers/showTimeController');
 
-// Route to add a showtime
-router.post('/add', addShowTime);
-
-// Route to get a showtime by ID
-router.get('/:id', getShowTime);
-
-// Route to update a showtime by ID
-router.put('/:id', updateShowTime);
-
-// Route to delete a showtime by ID
-router.delete('/:id', deleteShowTime);
-
-// Route to get all showtimes
-router.get('/', getAllShowTimes);
+// Routes
+router.post('/add', addShowtime); // Add new showtime
+router.get('/', getShowtimes); // Get all showtimes
+router.get('/:id', getShowtimeById); // Get a single showtime by ID
+router.delete('/:id', deleteShowtime); // Delete a showtime
 
 module.exports = router;
