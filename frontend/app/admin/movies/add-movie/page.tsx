@@ -48,6 +48,7 @@ const AddMovie = () => {
         setWriter(data.Writer);
         setActors(data.Actors);
         setLanguage(data.Language);
+        setYear(data.Year);
       } else {
         setError(data.Error);
         setMovieDetails(null);
@@ -77,6 +78,7 @@ const AddMovie = () => {
       writer,
       actors,
       language,
+      year,
     };
 
     try {
@@ -143,6 +145,18 @@ const AddMovie = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Movie Title"
+                className="p-2 border rounded w-full"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Movie Year
+              </label>
+              <input
+                type="text"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                placeholder="Movie Year"
                 className="p-2 border rounded w-full"
               />
             </div>
