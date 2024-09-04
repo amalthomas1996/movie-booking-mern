@@ -1,9 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 const Movies = () => {
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedMovieId, setSelectedMovieId] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -17,15 +20,28 @@ const Movies = () => {
     router.push(`/admin/movies/${id}`);
   };
 
-  const handleDelete = async (id: string) => {
-    try {
-      await fetch(`http://localhost:5000/api/movies/${id}`, {
-        method: "DELETE",
-      });
-      setMovies(movies.filter((movie: any) => movie._id !== id));
-    } catch (error) {
-      console.error("Error deleting movie:", error);
+  const handleDelete = async () => {
+    if (selectedMovieId) {
+      try {
+        await fetch(`http://localhost:5000/api/movies/${selectedMovieId}`, {
+          method: "DELETE",
+        });
+        setMovies(movies.filter((movie: any) => movie._id !== selectedMovieId));
+        setIsModalOpen(false);
+      } catch (error) {
+        console.error("Error deleting movie:", error);
+      }
     }
+  };
+
+  const openDeleteModal = (id: string) => {
+    setSelectedMovieId(id);
+    setIsModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsModalOpen(false);
+    setSelectedMovieId(null);
   };
 
   return (
@@ -87,7 +103,7 @@ const Movies = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(movie._id)}
+                    onClick={() => openDeleteModal(movie._id)}
                     className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-1.5 text-center"
                   >
                     Delete
@@ -98,6 +114,13 @@ const Movies = () => {
           ))}
         </tbody>
       </table>
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        message="Do you really want to delete this movie?"
+        onConfirm={handleDelete}
+        onCancel={closeDeleteModal}
+      />
     </div>
   );
 };

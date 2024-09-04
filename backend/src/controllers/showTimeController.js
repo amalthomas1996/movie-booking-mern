@@ -22,16 +22,22 @@ exports.addShowtime = async (req, res) => {
     res.status(500).json({ message: 'Error creating showtime', error });
   }
 };
-
 // Generate seats
 const generateSeats = (count) => {
   const seats = [];
-  for (let i = 1; i <= count; i++) {
-    seats.push({ seatNumber: `A${i}`, isBooked: false });
+  const rows = Math.ceil(count / 10); // Calculate the number of rows needed
+
+  for (let i = 0; i < rows; i++) {
+    const rowLetter = String.fromCharCode(65 + i);
+    for (let j = 1; j <= 10; j++) {
+      const seatNumber = `${rowLetter}${j}`;
+      seats.push({ seatNumber, isBooked: false });
+      if (seats.length >= count) break;
+    }
   }
+
   return seats;
 };
-
 // Get all showtimes
 exports.getShowtimes = async (req, res) => {
   try {
@@ -54,6 +60,27 @@ exports.getShowtimeById = async (req, res) => {
     res.status(500).json({ message: 'Error fetching showtime', error });
   }
 };
+// Update showtime by ID
+exports.updateShowtime = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { theaterId, movieId, showtime } = req.body;
+
+    const updatedShowtime = await Showtime.findByIdAndUpdate(
+      id,
+      { theater: theaterId, movie: movieId, showtime },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedShowtime) {
+      return res.status(404).json({ message: 'Showtime not found' });
+    }
+
+    res.status(200).json({ message: 'Showtime updated successfully', showtime: updatedShowtime });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating showtime', error });
+  }
+};
 
 // Delete a showtime
 exports.deleteShowtime = async (req, res) => {
@@ -67,3 +94,4 @@ exports.deleteShowtime = async (req, res) => {
     res.status(500).json({ message: 'Error deleting showtime', error });
   }
 };
+

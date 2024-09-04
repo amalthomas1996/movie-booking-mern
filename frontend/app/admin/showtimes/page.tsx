@@ -1,9 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 const Showtimes = () => {
-  const [showtimes, setShowtimes] = useState([]);
+  const [showtimes, setShowtimes] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedShowtimeId, setSelectedShowtimeId] = useState<string | null>(
+    null
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -17,13 +22,35 @@ const Showtimes = () => {
     router.push(`/admin/showtimes/${id}`);
   };
 
-  const handleDelete = async (id: string) => {
-    try {
-      await fetch(`/api/showtimes/${id}`, { method: "DELETE" });
-      setShowtimes(showtimes.filter((showtime: any) => showtime._id !== id));
-    } catch (error) {
-      console.error("Error deleting showtime:", error);
+  const handleDelete = async () => {
+    if (selectedShowtimeId) {
+      try {
+        await fetch(
+          `http://localhost:5000/api/showtimes/${selectedShowtimeId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        setShowtimes(
+          showtimes.filter(
+            (showtime: any) => showtime._id !== selectedShowtimeId
+          )
+        );
+        setIsModalOpen(false);
+      } catch (error) {
+        console.error("Error deleting showtime:", error);
+      }
     }
+  };
+
+  const openDeleteModal = (id: string) => {
+    setSelectedShowtimeId(id);
+    setIsModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsModalOpen(false);
+    setSelectedShowtimeId(null);
   };
 
   return (
@@ -54,7 +81,15 @@ const Showtimes = () => {
                 {showtime.theater.name}
               </td>
               <td className="border border-gray-300 p-2">
-                {showtime.showtime}
+                {new Date(showtime.showtime).toLocaleString("en-US", {
+                  weekday: "short",
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })}
               </td>
               <td className="border border-gray-300 p-2">
                 <button
@@ -64,7 +99,7 @@ const Showtimes = () => {
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDelete(showtime._id)}
+                  onClick={() => openDeleteModal(showtime._id)}
                   className="p-1 bg-red-500 text-white rounded hover:bg-red-600"
                 >
                   Delete
@@ -74,6 +109,13 @@ const Showtimes = () => {
           ))}
         </tbody>
       </table>
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        message="Do you really want to delete this showtime?"
+        onConfirm={handleDelete}
+        onCancel={closeDeleteModal}
+      />
     </div>
   );
 };
