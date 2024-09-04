@@ -6,7 +6,7 @@ const Banner = () => {
     >
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="relative z-10 text-center text-white py-20">
-        <h1 className="text-5xl font-bold">Welcome to Movie Booking</h1>
+        <h1 className="text-5xl font-bold">Welcome to Moviepeak</h1>
         <p className="mt-4 text-xl">
           Book tickets for the latest movies in your city
         </p>

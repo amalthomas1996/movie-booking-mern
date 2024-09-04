@@ -2,8 +2,8 @@ import Link from "next/link";
 
 const Sidebar = () => {
   return (
-    <nav className="w-64 bg-gray-800 text-white">
-      <ul>
+    <nav className="w-60 bg-gray-800 text-white flex flex-col ">
+      <ul className="mt-10">
         <li>
           <Link href="/admin/dashboard" className="block p-4 hover:bg-gray-700">
             Dashboard

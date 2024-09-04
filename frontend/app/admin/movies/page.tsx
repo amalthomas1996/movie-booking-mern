@@ -49,9 +49,9 @@ const Movies = () => {
       <h1 className="text-3xl font-bold mb-4">Manage Movies</h1>
       <button
         onClick={() => router.push("/admin/movies/add-movie")}
-        className="mb-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        className="text-black-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-black-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
       >
-        Add New Movie
+        Add New Movie ➕
       </button>
       <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden font-sans">
         <thead className="bg-gray-100">
@@ -64,6 +64,24 @@ const Movies = () => {
             </th>
             <th className="border-b-2 border-gray-200 p-3 text-left text-base font-semibold text-gray-700">
               Genre
+            </th>
+            <th className="border-b-2 border-gray-200 p-3 text-left text-base font-semibold text-gray-700">
+              Year
+            </th>
+            <th className="border-b-2 border-gray-200 p-3 text-left text-base font-semibold text-gray-700">
+              Director
+            </th>
+            <th className="border-b-2 border-gray-200 p-3 text-left text-base font-semibold text-gray-700">
+              Writer
+            </th>
+            <th className="border-b-2 border-gray-200 p-3 text-left text-base font-semibold text-gray-700">
+              Actors
+            </th>
+            <th className="border-b-2 border-gray-200 p-3 text-left text-base font-semibold text-gray-700">
+              Language
+            </th>
+            <th className="border-b-2 border-gray-200 p-3 text-left text-base font-semibold text-gray-700">
+              Duration
             </th>
             <th className="border-b-2 border-gray-200 p-3 text-center text-base font-semibold text-gray-700">
               Poster
@@ -81,7 +99,17 @@ const Movies = () => {
             <tr key={movie._id} className="hover:bg-gray-100">
               <td className="p-3 text-sm text-gray-700">{movie.title}</td>
               <td className="p-3 text-sm text-gray-700">{movie.description}</td>
-              <td className="p-3 text-sm text-gray-700">{movie.genre}</td>
+              <td className="p-3 text-sm text-gray-700">
+                {movie.genre.join(", ")}
+              </td>
+              <td className="p-3 text-sm text-gray-700">{movie.year}</td>
+              <td className="p-3 text-sm text-gray-700">{movie.director}</td>
+              <td className="p-3 text-sm text-gray-700">{movie.writer}</td>
+              <td className="p-3 text-sm text-gray-700">{movie.actors}</td>
+              <td className="p-3 text-sm text-gray-700">{movie.language}</td>
+              <td className="p-3 text-sm text-gray-700">
+                {movie.duration} min
+              </td>
               <td className="p-2 flex items-center justify-center">
                 {movie.image ? (
                   <img

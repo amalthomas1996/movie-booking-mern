@@ -1,19 +1,64 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const AddMovie = () => {
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [releaseDate, setReleaseDate] = useState("");
+  const [year, setYear] = useState("");
   const [description, setDescription] = useState("");
   const [rating, setRating] = useState<number | "">(0);
   const [image, setImage] = useState("");
   const [duration, setDuration] = useState<number | "">(0);
+  const [director, setDirector] = useState("");
+  const [writer, setWriter] = useState("");
+  const [actors, setActors] = useState("");
+  const [language, setLanguage] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const [movieName, setMovieName] = useState("");
+  const [movieDetails, setMovieDetails] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
+
+  const handleSearch = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch(
+        `https://www.omdbapi.com/?t=${encodeURIComponent(
+          movieName
+        )}&y=${encodeURIComponent(year)}&apikey=ed276f69`
+      );
+      const data = await response.json();
+      if (data.Response === "True") {
+        setMovieDetails(data);
+        setTitle(data.Title);
+        setGenre(data.Genre);
+        setReleaseDate(data.Released);
+        setDescription(data.Plot);
+        setRating(data.imdbRating);
+        setImage(data.Poster);
+        setDuration(data.Runtime.replace(" min", ""));
+        setDirector(data.Director);
+        setWriter(data.Writer);
+        setActors(data.Actors);
+        setLanguage(data.Language);
+      } else {
+        setError(data.Error);
+        setMovieDetails(null);
+      }
+    } catch (error) {
+      setError("Failed to fetch movie details");
+      setMovieDetails(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +73,10 @@ const AddMovie = () => {
       rating: parseFloat(rating.toString()),
       image,
       duration: parseInt(duration.toString()),
+      director,
+      writer,
+      actors,
+      language,
     };
 
     try {
@@ -55,112 +104,172 @@ const AddMovie = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8">
-      <h1 className="text-2xl font-bold mb-4">Add New Movie</h1>
-      {error && (
-        <p className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded shadow-md">
-          {error}
-        </p>
-      )}
-      {success && (
-        <p className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded shadow-md">
-          {success}
-        </p>
-      )}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="title" className="block font-medium">
-            Movie Title
-          </label>
+    <div>
+      <h1 className="text-3xl font-bold mb-4">Add New Movie</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
           <input
             type="text"
-            id="title"
-            className="w-full border border-gray-300 p-2 rounded"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
+            value={movieName}
+            onChange={(e) => setMovieName(e.target.value)}
+            placeholder="Enter movie title"
+            className="p-2 border rounded w-full"
           />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="genre" className="block font-medium">
-            Genre (comma-separated)
-          </label>
           <input
             type="text"
-            id="genre"
-            className="w-full border border-gray-300 p-2 rounded"
-            value={genre}
-            onChange={(e) => setGenre(e.target.value)}
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            placeholder="Enter movie year (optional)"
+            className="p-2 border rounded w-full mt-2"
           />
+          <button
+            type="button"
+            onClick={handleSearch}
+            className="mt-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Search
+          </button>
         </div>
-        <div className="mb-4">
-          <label htmlFor="releaseDate" className="block font-medium">
-            Release Date
-          </label>
-          <input
-            type="date"
-            id="releaseDate"
-            className="w-full border border-gray-300 p-2 rounded"
-            value={releaseDate}
-            onChange={(e) => setReleaseDate(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="description" className="block font-medium">
-            Description
-          </label>
-          <textarea
-            id="description"
-            className="w-full border border-gray-300 p-2 rounded"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={4}
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="rating" className="block font-medium">
-            Rating (0-10)
-          </label>
-          <input
-            type="number"
-            id="rating"
-            className="w-full border border-gray-300 p-2 rounded"
-            value={rating}
-            onChange={(e) => setRating(parseFloat(e.target.value))}
-            min={0}
-            max={10}
-            step={0.1}
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="image" className="block font-medium">
-            Image URL
-          </label>
-          <input
-            type="text"
-            id="image"
-            className="w-full border border-gray-300 p-2 rounded"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="duration" className="block font-medium">
-            Duration (minutes)
-          </label>
-          <input
-            type="number"
-            id="duration"
-            className="w-full border border-gray-300 p-2 rounded"
-            value={duration}
-            onChange={(e) => setDuration(parseInt(e.target.value))}
-            required
-          />
-        </div>
+        {loading && <p>Loading...</p>}
+        {error && <p className="text-red-500">{error}</p>}
+        {movieDetails && (
+          <>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Movie Title
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Movie Title"
+                className="p-2 border rounded w-full"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Movie Genre
+              </label>
+              <input
+                type="text"
+                value={genre}
+                onChange={(e) => setGenre(e.target.value)}
+                placeholder="Movie Genre"
+                className="p-2 border rounded w-full"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Release Date
+              </label>
+              <input
+                type="text"
+                value={releaseDate}
+                onChange={(e) => setReleaseDate(e.target.value)}
+                placeholder="Release Date"
+                className="p-2 border rounded w-full"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Director
+              </label>
+              <input
+                type="text"
+                value={director}
+                onChange={(e) => setDirector(e.target.value)}
+                placeholder="Director"
+                className="p-2 border rounded w-full"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Writer
+              </label>
+              <input
+                type="text"
+                value={writer}
+                onChange={(e) => setWriter(e.target.value)}
+                placeholder="Writer"
+                className="p-2 border rounded w-full"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Actors
+              </label>
+              <input
+                type="text"
+                value={actors}
+                onChange={(e) => setActors(e.target.value)}
+                placeholder="Actors"
+                className="p-2 border rounded w-full"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Language
+              </label>
+              <input
+                type="text"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                placeholder="Language"
+                className="p-2 border rounded w-full"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Movie Description
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Movie Description"
+                className="p-2 border rounded w-full"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                IMDb Rating
+              </label>
+              <input
+                type="text"
+                value={rating}
+                onChange={(e) => setRating(e.target.value as number | "")}
+                placeholder="IMDb Rating"
+                className="p-2 border rounded w-full"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Movie Poster URL
+              </label>
+              <input
+                type="text"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+                placeholder="Movie Poster URL"
+                className="p-2 border rounded w-full"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Duration (minutes)
+              </label>
+              <input
+                type="text"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value as number | "")}
+                placeholder="Duration"
+                className="p-2 border rounded w-full"
+              />
+            </div>
+          </>
+        )}
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          className="p-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
           Add Movie
         </button>
