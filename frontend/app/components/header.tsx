@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 const Header = () => {
   return (
@@ -10,9 +11,7 @@ const Header = () => {
           <Link href="/">Moviepeak</Link>
         </h1>
         <nav>
-          <Link href="/login" className="mr-4 hover:underline">
-            Sign In
-          </Link>
+          <button onClick={() => signIn("google")}>Sign In</button>
           <Link href="/movies" className="hover:underline">
             Movies
           </Link>

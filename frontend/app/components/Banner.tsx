@@ -1,8 +1,8 @@
 const Banner = () => {
   return (
     <div
-      className="relative h-96 bg-cover bg-center"
-      style={{ backgroundImage: "url('/banner-image.jpg')" }}
+      className="relative h-96  bg-strech bg-center"
+      style={{ backgroundImage: "url('/banner.png')" }}
     >
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="relative z-10 text-center text-white py-20">
