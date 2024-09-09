@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../../models/User');
 
 exports.createOrUpdateUser = async (profile) => {
   const { id, name, email } = profile;

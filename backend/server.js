@@ -2,12 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-const userRoutes = require('./src/routes/userRoutes');
+//const userRoutes = require('./src/routes/userRoutes');
 const movieRoutes = require('./src/routes/movieRoutes');
 const theaterRoutes = require('./src/routes/theaterRoutes');
 const showTimeRoutes = require('./src/routes/showTimeRoutes');
 const bookingRoutes = require('./src/routes/bookingRoutes');
-const authRoutes = require('./src/routes/authRoutes');
+
 
 const dotenv = require('dotenv');
 
@@ -22,12 +22,12 @@ app.use(express.json());
 
 
 // Routes
-app.use('/api/users', userRoutes);
+//app.use('/api/users', userRoutes);
 app.use('/api/movies', movieRoutes);
 app.use('/api/theaters', theaterRoutes);
 app.use('/api/showtimes', showTimeRoutes);
-app.use('/api/bookings', bookingRoutes);
-app.use('/api/auth', authRoutes);
+//app.use('/api/bookings', bookingRoutes);
+
 
 
 // MongoDB Connection
